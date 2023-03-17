@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\MarcaRequest;
 use App\Models\Marca;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MarcaController extends Controller
 {
@@ -62,9 +62,13 @@ class MarcaController extends Controller
         }
 
         $nome = isset($request->nome) ? $request->nome : $marca->nome;
-        
         $imagem = $request->file('imagem');
-        $imagemUri = isset($imagem) ? $imagem->store('imagens', 'public') : $marca->imagem;
+        $imagemUri = $marca->imagem;
+
+        if($imagem){
+            Storage::disk('public')->delete($marca->imagem);
+            $imagemUri = $imagem->store('imagens', 'public');
+        }
 
         $marca->update([
             'nome' => $nome,
@@ -84,6 +88,8 @@ class MarcaController extends Controller
         if(!$marca){
             return response()->json(['msg' => 'marca não encontrada'], 404);
         }
+        Storage::disk('public')->delete($marca->imagem);
+
         $marca->delete();
         return response()->json(['msg' => 'marca deletada com sucesso'], 200);
     }
