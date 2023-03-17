@@ -29,7 +29,12 @@ class MarcaController extends Controller
      */
     public function store(MarcaRequest $request)
     {
-        $marca = $this->marca->firstOrCreate($request->all());
+        $imagem = $request->file('imagem');
+        $uriImagem = $imagem->store('imagens', 'public');
+        $marca = $this->marca->create([
+            'nome' => $request->nome,
+            'imagem' => $uriImagem
+        ]);
         return response()->json($marca, 200);
     }
 
@@ -40,7 +45,7 @@ class MarcaController extends Controller
     {
         $marca = $this->marca->find($id);
         if(!$marca){
-            return response()->json(['msg' => 'Marca não encontrada', 404]);
+            return response()->json(['msg' => 'Marca não encontrada'], 404);
         }
         return response()->json($marca, 200);
     }
@@ -53,11 +58,18 @@ class MarcaController extends Controller
         $marca =  $this->marca->find($id);
 
         if(!$marca){
-            return response()->json(['msg' => 'Marca não encontrada', 404]);
+            return response()->json(['msg' => 'Marca nao encontrada'], 404);
         }
 
-        $marca->update(
-            $request->all()
+        $nome = isset($request->nome) ? $request->nome : $marca->nome;
+        
+        $imagem = $request->file('imagem');
+        $imagemUri = isset($imagem) ? $imagem->store('imagens', 'public') : $marca->imagem;
+
+        $marca->update([
+            'nome' => $nome,
+            'imagem' => $imagemUri
+           ]
         );
 
         return response()->json($marca, 200);

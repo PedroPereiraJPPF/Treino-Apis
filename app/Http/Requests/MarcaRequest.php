@@ -21,9 +21,28 @@ class MarcaRequest extends FormRequest
      */
     public function rules(): array
     {
+        if($this->method() == 'PATCH'){
+            return [
+                
+            ];
+        }
+        if($this->method() == 'PUT'){
+            return [
+                'nome' => 'required',
+                'imagem' => 'required|image'
+            ];
+        }
         return [
-            'nome' => 'required',
-            'imagem'  => 'required',
+            'nome' => 'unique:marcas|min:3',
+            'imagem'  => 'required|image',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'required' => 'o campo :attribute é obrigatorio',
+            'unique' => 'o campo :attribute deve ser unico'
         ];
     }
 }
