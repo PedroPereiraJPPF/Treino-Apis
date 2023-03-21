@@ -12,16 +12,21 @@ class Modelo extends Model
     protected $fillable = 
     [
         'nome', 
+        'marca_id',
         'imagem', 
+        'numero_de_portas',
+        'lugares',
+        'air_bag',
+        'abs'
     ];
 
-    public function modelo()
+    public function marca()
     {
-        $this->belongsTo(Marca::class);
+        return $this->belongsTo(Marca::class);
     }
 
-    public function carro()
+    public function Carro()
     {
-        $this->hasMany(Carro::class);
+        return $this->hasMany(Carro::class);
     }
 }

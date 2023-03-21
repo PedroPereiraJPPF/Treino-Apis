@@ -14,12 +14,12 @@ class MarcaRepository
 
     public function mostrarTodasAsMarcas()
     {
-        return $this->marca->all();
+        return $this->marca->with('modelos')->get();
     }
 
     public function selecionarMarcaPorID($marcaId)
     {
-        return $this->marca->find($marcaId);
+        return $this->marca->with('modelos')->find($marcaId);
     }
 
     public function adicionarMarca(array $dadosDaMarca)

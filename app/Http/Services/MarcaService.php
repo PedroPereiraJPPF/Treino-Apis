@@ -30,7 +30,7 @@ class MarcaService
          return $this->marca->adicionarMarca(
             [
                'nome' => $dadosDaMarca->nome,
-               'imagem' => $this->retornarLinkSimbolicoDaImagem($dadosDaMarca->file('imagem'))
+               'imagem' => retornarLinkSimbolicoDaImagem($dadosDaMarca->file('imagem'))
             ]
          );
      }
@@ -47,7 +47,7 @@ class MarcaService
 
          if($dadosDaMarca->file('imagem')){
             Storage::disk('public')->delete($marca->imagem);
-            $imagemUri = $this->retornarLinkSimbolicoDaImagem($dadosDaMarca->file('imagem'));
+            $imagemUri = retornarLinkSimbolicoDaImagem($dadosDaMarca->file('imagem'));
          }
 
          return $this->marca->atualizarMarca([
@@ -62,10 +62,6 @@ class MarcaService
          $marca->delete();
      }
 
-     public function retornarLinkSimbolicoDaImagem($imagemFile)
-     {
-        return $imagemFile->store('imagens', 'public');
-     }
 
 
 }

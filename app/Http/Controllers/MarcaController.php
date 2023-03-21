@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MarcaRequest;
-use App\Models\Marca;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Services\MarcaService;
 
