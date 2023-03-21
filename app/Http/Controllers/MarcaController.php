@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MarcaRequest;
 use App\Models\Marca;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Services\MarcaService;
 
 class MarcaController extends Controller
 {
     protected $marca;
 
-    public function __construct(Marca $marca)
+    public function __construct(MarcaService $marca)
     {
         $this->marca = $marca;
     }
@@ -21,7 +22,7 @@ class MarcaController extends Controller
      */
     public function index()
     {
-        return response()->json($this->marca->all(), 200);
+        return response()->json($this->marca->mostrarTodasAsMarcas(), 200);
     }
 
     /**
@@ -29,13 +30,7 @@ class MarcaController extends Controller
      */
     public function store(MarcaRequest $request)
     {
-        $imagem = $request->file('imagem');
-        $uriImagem = $imagem->store('imagens', 'public');
-        $marca = $this->marca->create([
-            'nome' => $request->nome,
-            'imagem' => $uriImagem
-        ]);
-        return response()->json($marca, 200);
+        return response()->json($this->marca->adicionarMarca($request), 200);
     }
 
     /**
@@ -43,7 +38,7 @@ class MarcaController extends Controller
      */
     public function show($id)
     {
-        $marca = $this->marca->find($id);
+        $marca = $this->marca->selecionarMarcaPorID($id);
         if(!$marca){
             return response()->json(['msg' => 'Marca não encontrada'], 404);
         }
@@ -55,28 +50,13 @@ class MarcaController extends Controller
      */
     public function update(MarcaRequest $request, $id)
     {
-        $marca =  $this->marca->find($id);
+        $marcaAtualizada = $this->marca->atualizarMarca($request, $id);
 
-        if(!$marca){
-            return response()->json(['msg' => 'Marca nao encontrada'], 404);
+        if(!$marcaAtualizada){
+            return response()->json(['mensagem' => 'marca não encontrada'], 404);
         }
 
-        $nome = isset($request->nome) ? $request->nome : $marca->nome;
-        $imagem = $request->file('imagem');
-        $imagemUri = $marca->imagem;
-
-        if($imagem){
-            Storage::disk('public')->delete($marca->imagem);
-            $imagemUri = $imagem->store('imagens', 'public');
-        }
-
-        $marca->update([
-            'nome' => $nome,
-            'imagem' => $imagemUri
-           ]
-        );
-
-        return response()->json($marca, 200);
+        return response()->json($marcaAtualizada, 200);
     }
 
     /**
@@ -84,13 +64,12 @@ class MarcaController extends Controller
      */
     public function destroy($id)
     {
-        $marca = $this->marca->find($id);
+        $marca = $this->marca->selecionarMarcaPorID($id);
         if(!$marca){
             return response()->json(['msg' => 'marca não encontrada'], 404);
         }
-        Storage::disk('public')->delete($marca->imagem);
 
-        $marca->delete();
+        $this->marca->deletarMarca($marca);
         return response()->json(['msg' => 'marca deletada com sucesso'], 200);
     }
 }

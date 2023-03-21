@@ -1,8 +1,7 @@
 <?php
 
 namespace app\Http\Repositories;
-use app\Models\Marca;
-use Exception;
+use App\Models\Marca;
 
 class MarcaRepository
 {
@@ -13,7 +12,7 @@ class MarcaRepository
         $this->marca = $marca;
     }
 
-    public function mostrarMarcas()
+    public function mostrarTodasAsMarcas()
     {
         return $this->marca->all();
     }
@@ -30,13 +29,12 @@ class MarcaRepository
         );
     }
 
-    public function atualizarMarca(array $dadosDaMarca, $id)
+    public function atualizarMarca(array $dadosNovosDaMarca, $marca)
     {
-        $marca = $this->selecionarMarcaPorID($id);
-
-        return $marca->update(
-            $dadosDaMarca
+        $marca->update(
+            $dadosNovosDaMarca
         );
+        return $marca;
     }
 
     public function deletarMarca($id)
