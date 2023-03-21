@@ -39,7 +39,7 @@ class ModeloController extends Controller
 
             return response()->json([$modelo], 201);
         }catch(Exception $e){
-            return response()->json([$e], 404);
+            return response()->json([$e], 500);
         }
     }
 
@@ -48,27 +48,56 @@ class ModeloController extends Controller
      */
     public function show($id)
     {
-        $marca = $this->modelo->with('marca')->find($id);
-        if(!$marca){
-            return response()->json(["mensagem" => "modelo não encontrado"], 404);
+        $modelo = $this->modelo->with('marca')->find($id);
+        if(!$modelo){
+            return response()->json(["mensagem" => "modelo não encontrado"], 400);
         }
 
-        return response()->json($marca, 200);
+        return response()->json($modelo, 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Modelo $modelo)
+    public function update(ModeloRequest $request, $id)
     {
-        //
+        try{
+            $modelo = $this->modelo->find($id);
+            if(!$modelo){
+                return response()->json(["mensagem" => "modelo não encontrado"], 400); 
+            }
+
+            $modelo->fill($request->all());
+            
+            if($request->file('imagem')){
+                Storage::disk('public')->delete($modelo->getOriginal()["imagem"]);
+                $modelo->imagem = retornarLinkSimbolicoDaImagem($request->file('imagem'), 'imagens/modelos');
+            }
+            $modelo->save();
+
+            return response()->json([$modelo], 200);
+        }catch(Exception $e){
+            return response()->json([$e], 500);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Modelo $modelo)
+    public function destroy($id)
     {
-        //
+        try{
+            $modelo = $this->modelo->find($id);
+            if(!$modelo){
+                return response()->json(["modelo não encontrado"], 400);
+            }
+            Storage::disk('public')->delete($modelo->imagem);
+
+            $modelo->delete();
+
+            return response()->json(["modelo excluido com sucesso"], 200);
+        }catch(Exception $e){
+            return response()->json([$e], 500);
+        }
     }
 }

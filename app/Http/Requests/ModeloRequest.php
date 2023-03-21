@@ -23,7 +23,6 @@ class ModeloRequest extends FormRequest
     {
         if($this->method() == 'PATCH'){
             return [
-                'nome' => 'unique:modelos',
                 'numero_de_portas' => 'digits_between:1,4',
                 'lugares' => 'digits_between:1,5',
                 'air_bag' => 'boolean',
@@ -32,7 +31,7 @@ class ModeloRequest extends FormRequest
         }
         if($this->method() == 'PUT'){
             return [
-                'nome' => 'unique:modelos|min:3',
+                'nome' => 'min:3',
                 'imagem' => 'required|image',
                 'marca_id' => 'required',
                 'numero_de_portas' => 'required|between:1,4',
@@ -57,7 +56,8 @@ class ModeloRequest extends FormRequest
         return [
             'required' => 'o campo :attribute é obrigatorio',
             'unique' => 'o campo :attribute deve ser unico',
-            'digits_between' => ':attribute invalido'
+            'digits_between' => ':attribute invalido',
+            'min' => ':attribute invalido'
         ];
     }
 }
