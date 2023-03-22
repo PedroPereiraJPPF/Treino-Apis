@@ -6,15 +6,18 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Modelo;
 use Illuminate\Http\Request;
 use App\Http\Requests\ModeloRequest;
+use App\Http\Services\ModeloService;
 use Exception;
 
 class ModeloController extends Controller
 {
     protected $modelo;
+    protected $modeloService;
 
-    public function __construct(Modelo $modelo)
+    public function __construct(Modelo $modelo, ModeloService $modeloService)
     {
         $this->modelo = $modelo;
+        $this->modeloService = $modeloService;
     }
 
     /**
@@ -22,13 +25,8 @@ class ModeloController extends Controller
      */
     public function index(Request $request)
     {
-        $modelo = $this->modelo;
-        if($request->atributos){
-            $modelo = $modelo->selectRaw($request->atributos.",marca_id");
-        }
-        if($request->marca_atributos){
-            $modelo = $modelo->with('marca:id,'.$request->marca_atributos);
-        }
+        $modelo = $this->modelo->with('marca');
+        $modelo = $this->modeloService->selecionarCamposParaRetornarMarcaModelo($modelo, $request);
         return $modelo->get();
     }
 
@@ -53,14 +51,16 @@ class ModeloController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(Request $request, $id) 
     {
-        $modelo = $this->modelo->with('marca')->find($id);
+        $modelo = $this->modelo->with('marca')->where('id', $id);
         if(!$modelo){
             return response()->json(["mensagem" => "modelo não encontrado"], 400);
         }
 
-        return response()->json($modelo, 200);
+        $modelo = $this->modeloService->selecionarCamposParaRetornarMarcaModelo($modelo, $request);
+
+        return response()->json($modelo->get(), 200);
     }
 
     /**
