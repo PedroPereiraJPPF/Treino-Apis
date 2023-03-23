@@ -12,14 +12,18 @@ class MarcaRepository
         $this->marca = $marca;
     }
 
-    public function mostrarTodasAsMarcas()
+    public function mostrarTodasAsMarcas($request)
     {
-        return $this->marca->with('modelos')->get();
+        $marcas = $this->marca->with('modelos');
+        $marcas = $this->selecionarCamposParaRetornarMarcaModelo($marcas, $request);
+        return $marcas->get();
     }
 
-    public function selecionarMarcaPorID($marcaId)
+    public function selecionarMarcaPorID($marcaId, $request = null)
     {
-        return $this->marca->with('modelos')->find($marcaId);
+        $marca = $this->marca->with('modelos')->where('id', $marcaId);
+        $marca = $request ? $this->selecionarCamposParaRetornarMarcaModelo($marca, $request) : $marca;
+        return $marca->get();
     }
 
     public function adicionarMarca(array $dadosDaMarca)
@@ -41,4 +45,16 @@ class MarcaRepository
     {
         $this->selecionarMarcaPorID($id)->delete();
     }
+
+    public function selecionarCamposParaRetornarMarcaModelo($marca, $request)
+    {
+        if($request['atributos']){
+            $marca = $marca->selectRaw("id,".$request['atributos']);
+        }
+        if($request['modelos_atributos']){
+            $marca = $marca->with('modelos:'.$request['modelos_atributos'].",marca_id");
+        }
+        return $marca;
+    }
+
 }

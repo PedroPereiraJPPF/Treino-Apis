@@ -14,14 +14,14 @@ class MarcaService
         $this->marca = $marca;
      } 
 
-     public function mostrarTodasAsMarcas()
+     public function mostrarTodasAsMarcas($request)
      {
-        return $this->marca->mostrarTodasAsMarcas();
+        return $this->marca->mostrarTodasAsMarcas($request);
      }
 
-     public function selecionarMarcaPorID($id)
+     public function selecionarMarcaPorID($MarcaId, $request = null)
      {
-        $marcaSelecionada = $this->marca->selecionarMarcaPorID($id);
+        $marcaSelecionada = $this->marca->selecionarMarcaPorID($MarcaId, $request);
         return $marcaSelecionada;
      }
 
