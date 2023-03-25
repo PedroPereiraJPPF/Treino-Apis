@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ModeloRequest;
 use App\Http\Services\ModeloService;
 use Exception;
+use Illuminate\Database\QueryException;
 
 class ModeloController extends Controller
 {
@@ -25,9 +26,13 @@ class ModeloController extends Controller
      */
     public function index(Request $request)
     {
-        $modelo = $this->modelo->with('marca');
-        $modelo = $this->modeloService->selecionarCamposParaRetornarMarcaModelo($modelo, $request);
-        return $modelo->get();
+        try{
+            $modelo = $this->modelo->with('marca');
+            $modelo = $this->modeloService->selecionarCamposParaRetornarMarcaModelo($modelo, $request);
+            return response()->json([$modelo->paginate($request->porPagina)], 200);
+        }catch(QueryException $e){
+            return response()->json(['msg' => $e->getMessage()], 400);
+        }
     }
 
     /**

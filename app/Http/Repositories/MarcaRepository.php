@@ -16,7 +16,7 @@ class MarcaRepository
     {
         $marcas = $this->marca->with('modelos');
         $marcas = $this->selecionarCamposParaRetornarMarcaModelo($marcas, $request);
-        return $marcas->get();
+        return $marcas->paginate($request->porPagina);
     }
 
     public function selecionarMarcaPorID($marcaId, $request = null)

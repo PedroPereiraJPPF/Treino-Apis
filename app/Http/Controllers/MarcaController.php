@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MarcaRequest;
-use Illuminate\Support\Facades\Storage;
 use App\Http\Services\MarcaService;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
 class MarcaController extends Controller
@@ -22,11 +22,15 @@ class MarcaController extends Controller
      */
     public function index(Request $request)
     {
-        $marca = $this->marca->mostrarTodasAsMarcas($request);
-        if(!$marca){
-            return response()->json(['marca nao encontrada'], 400);
+        try{
+            $marca = $this->marca->mostrarTodasAsMarcas($request);
+            if(!$marca){
+                return response()->json(['marca nao encontrada'], 400);
+            }
+            return response()->json($this->marca->mostrarTodasAsMarcas($request), 200);
+        }catch(QueryException $e){
+            return response()->json(['msg' => $e], 400);
         }
-        return response()->json($this->marca->mostrarTodasAsMarcas($request), 200);
     }
 
     /**
@@ -42,11 +46,15 @@ class MarcaController extends Controller
      */
     public function show($id, Request $request)
     {
-        $marca = $this->marca->selecionarMarcaPorID($id, $request);
-        if(!$marca){
-            return response()->json(['msg' => 'Marca não encontrada'], 404);
+        try{
+            $marca = $this->marca->selecionarMarcaPorID($id, $request);
+            if(!$marca){
+                return response()->json(['msg' => 'Marca não encontrada'], 404);
+            }
+            return response()->json($marca, 200);
+        }catch(QueryException $e){
+            return response()->json(['msg' => $e], 400);
         }
-        return response()->json($marca, 200);
     }
 
     /**
