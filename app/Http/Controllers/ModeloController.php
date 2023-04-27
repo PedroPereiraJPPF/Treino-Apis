@@ -44,7 +44,6 @@ class ModeloController extends Controller
             $modelo = $this->modelo;
             $modelo->fill($request->all());
             $modelo->imagem = retornarLinkSimbolicoDaImagem($request->file('imagem'), "imagens/modelos");
-
             $modelo->save();
 
             return response()->json([$modelo], 201);
@@ -104,9 +103,7 @@ class ModeloController extends Controller
                 return response()->json(["modelo não encontrado"], 400);
             }
             Storage::disk('public')->delete($modelo->imagem);
-
             $modelo->delete();
-
             return response()->json(["modelo excluido com sucesso"], 200);
         }catch(Exception $e){
             return response()->json([$e], 500);
