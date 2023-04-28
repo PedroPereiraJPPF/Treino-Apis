@@ -9,13 +9,17 @@ class Carro extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'imagem', 'modelo_id', 'placa', 'disponivel', 'km'
+    ];
+
     public function marca()
     {
         $this->belongsTo(Modelo::class);
     }
 
-    public function cliente()
+    public function clientes()
     {
-        $this->belongsToMany(Cliente::class);
+        return $this->belongsToMany(Cliente::class, 'locacoes', 'carro_id', 'cliente_id');
     }
 }

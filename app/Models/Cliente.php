@@ -9,8 +9,8 @@ class Cliente extends Model
 {
     use HasFactory;
 
-    public function carro()
+    public function carros()
     {
-        $this->belongsToMany(Carro::class);
+        return $this->belongsToMany(Carro::class, 'locacoes', 'cliente_id', 'carro_id');
     }
 }

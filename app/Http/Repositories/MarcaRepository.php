@@ -5,7 +5,7 @@ use App\Models\Marca;
 
 class MarcaRepository
 {
-    private $marca;
+    protected $marca;
     
     public function __construct(Marca $marca)
     {

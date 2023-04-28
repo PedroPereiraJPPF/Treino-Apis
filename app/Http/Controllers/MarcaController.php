@@ -9,11 +9,11 @@ use Illuminate\Http\Request;
 
 class MarcaController extends Controller
 {
-    protected $marca;
+    protected $marcaService;
 
     public function __construct(MarcaService $marca)
     {
-        $this->marca = $marca;
+        $this->marcaService = $marca;
     }
 
 
@@ -23,11 +23,11 @@ class MarcaController extends Controller
     public function index(Request $request)
     {
         try{
-            $marca = $this->marca->mostrarTodasAsMarcas($request);
+            $marca = $this->marcaService->mostrarTodasAsMarcas($request);
             if(!$marca){
                 return response()->json(['marca nao encontrada'], 400);
             }
-            return response()->json($this->marca->mostrarTodasAsMarcas($request), 200);
+            return response()->json($this->marcaService->mostrarTodasAsMarcas($request), 200);
         }catch(QueryException $e){
             return response()->json(['msg' => $e], 400);
         }
@@ -38,7 +38,7 @@ class MarcaController extends Controller
      */
     public function store(MarcaRequest $request)
     {
-        return response()->json($this->marca->adicionarMarca($request), 200);
+        return response()->json($this->marcaService->adicionarMarca($request), 200);
     }
 
     /**
@@ -47,7 +47,7 @@ class MarcaController extends Controller
     public function show($id, Request $request)
     {
         try{
-            $marca = $this->marca->selecionarMarcaPorID($id, $request);
+            $marca = $this->marcaService->selecionarMarcaPorID($id, $request);
             if(!$marca){
                 return response()->json(['msg' => 'Marca não encontrada'], 404);
             }
@@ -62,7 +62,7 @@ class MarcaController extends Controller
      */
     public function update(MarcaRequest $request, $id)
     {
-        $marcaAtualizada = $this->marca->atualizarMarca($request, $id);
+        $marcaAtualizada = $this->marcaService->atualizarMarca($request, $id);
 
         if(!$marcaAtualizada){
             return response()->json(['mensagem' => 'marca não encontrada'], 404);
@@ -76,12 +76,12 @@ class MarcaController extends Controller
      */
     public function destroy($id)
     {
-        $marca = $this->marca->selecionarMarcaPorID($id);
+        $marca = $this->marcaService->selecionarMarcaPorID($id);
         if(!$marca){
             return response()->json(['msg' => 'marca não encontrada'], 404);
         }
 
-        $this->marca->deletarMarca($marca);
+        $this->marcaService->deletarMarca($marca);
         return response()->json(['msg' => 'marca deletada com sucesso'], 200);
     }
 }

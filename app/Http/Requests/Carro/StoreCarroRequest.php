@@ -1,10 +1,8 @@
 <?php
-
-namespace App\Http\Requests;
-
+namespace App\Http\Requests\Carro;
 use Illuminate\Foundation\Http\FormRequest;
 
-class MarcaRequest extends FormRequest
+class StoreCarroRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,20 +19,12 @@ class MarcaRequest extends FormRequest
      */
     public function rules(): array
     {
-        if($this->method() == 'PATCH'){
-            return [
-                'imagem' => 'image'
-            ];
-        }
-        if($this->method() == 'PUT'){
-            return [
-                'nome' => 'required',
-                'imagem' => 'required|image'
-            ];
-        }
         return [
-            'nome' => 'unique:marcas|min:3',
-            'imagem'  => 'required|image',
+            'modelo_id' => 'required|numeric',
+            'placa' => 'required|string',
+            'imagem' => 'image',
+            'disponivel' => 'required|numeric',
+            'km' => 'required|numeric'
         ];
     }
 
@@ -42,7 +32,8 @@ class MarcaRequest extends FormRequest
     {
         return [
             'required' => 'o campo :attribute é obrigatorio',
-            'unique' => 'o campo :attribute deve ser unico'
+            'numeric' => 'o campo :attribute deve ser um Número',
+            'image' => 'o campo imagem deve ser uma imagem'
         ];
     }
 }

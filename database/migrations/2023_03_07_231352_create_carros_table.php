@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('modelo_id');
             $table->string('placa', 30);
+            $table->string('imagem', 100);
             $table->tinyInteger('disponivel');
-            $table->integer('km');
+            $table->float('km');
             $table->timestamps();
 
             $table->foreign('modelo_id')->references('id')->on('modelos')->onDeleteCascade();

@@ -2,12 +2,11 @@
 
 namespace app\Http\Services;
 use App\Http\Repositories\MarcaRepository;
-use App\Http\Requests\MarcaRequest;
 use Illuminate\Support\Facades\Storage;
 
 class MarcaService
 {
-     private $marca;
+     protected $marca;
 
      public function __construct(MarcaRepository $marca)
      {
