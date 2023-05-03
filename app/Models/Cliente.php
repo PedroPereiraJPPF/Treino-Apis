@@ -9,6 +9,8 @@ class Cliente extends Model
 {
     use HasFactory;
 
+    protected $fillable = ["nome"];
+
     public function carros()
     {
         return $this->belongsToMany(Carro::class, 'locacoes', 'cliente_id', 'carro_id');
